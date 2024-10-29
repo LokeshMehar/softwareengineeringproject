@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -11,4 +7,160 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id              String   @id @default(uuid())
+  name            String
+  email           String   @unique
+  password        String?
+  username        String @unique
+  department      String?
+  dob             String?
+  joiningYear     String?
+  avatar          String?
+  contactNumber   String?
+  passwordUpdated Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("admin")
+}
+
+model Attendance {
+  id                    String   @id @default(uuid())
+  student              Student  @relation(fields: [studentId], references: [id])
+  studentId            String
+  subject              Subject  @relation(fields: [subjectId], references: [id])
+  subjectId            String
+  totalLecturesByFaculty Int     @default(0)
+  lectureAttended       Int     @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("attendance")
+}
+
+
+model Department {
+  id             String    @id @default(uuid())
+  department     String    @unique
+  departmentCode String    @unique
+  faculties      Faculty[]
+  students       Student[]
+  subjects       Subject[]
+  tests          Test[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("department")
+}
+
+model Faculty {
+  id              String   @id @default(uuid())
+  name            String
+  email           String   @unique
+  avatar          String?
+  password        String @default("12345678")
+  username        String @unique
+  gender          String?
+  designation     String
+  department      String
+  contactNumber   String?
+  dob             String
+  joiningYear     Int
+  passwordUpdated Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  departmentRef   Department @relation(fields: [department], references: [department])
+
+  @@map("faculty")
+}
+
+model Marks {
+  id        String   @id @default(uuid())
+  exam      Test     @relation(fields: [examId], references: [id])
+  examId    String
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId String
+  marks     Int      @default(-1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("marks")
+}
+
+model Notice {
+  id        String   @id @default(uuid())
+  topic     String
+  date      String
+  content   String
+  from      String
+  noticeFor String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notice")
+}
+
+model Student {
+  id                  String       @id @default(uuid())
+  name                String
+  email               String       @unique
+  avatar              String?
+  password            String @default("abcdefgh")
+  year                Int
+  subjects            Subject[]    @relation("StudentToSubject")
+  username            String @unique
+  gender              String?
+  fatherName          String?
+  motherName          String?
+  department          String
+  section             String
+  batch               String?
+  contactNumber       String?
+  fatherContactNumber String?
+  dob                 String
+  passwordUpdated     Boolean      @default(false)
+  attendance          Attendance[]
+  marks               Marks[]
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  departmentRef       Department   @relation(fields: [department], references: [department])
+
+  @@map("student")
+}
+
+model Subject {
+  id            String       @id @default(uuid())
+  subjectName   String @unique
+  subjectCode   String
+  department    String
+  totalLectures Int         @default(10)
+  year          String
+  attendance    Attendance[]
+  students      Student[]    @relation("StudentToSubject")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  departmentRef Department   @relation(fields: [department], references: [department])
+
+  @@unique([subjectCode, department])
+  @@map("subject")
+}
+
+model Test {
+  id          String     @id @default(uuid())
+  test        String
+  subjectCode String
+  department  String
+  totalMarks  Int       @default(10)
+  year        String
+  section     String
+  date        String
+  marks       Marks[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  departmentRef Department @relation(fields: [department], references: [department])
+
+  @@map("test")
 }
