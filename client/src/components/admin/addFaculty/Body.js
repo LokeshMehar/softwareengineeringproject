@@ -8,60 +8,61 @@ import MenuItem from "@mui/material/MenuItem";
 import Spinner from "../../../utils/Spinner";
 import { ADD_FACULTY, SET_ERRORS } from "../../../redux/actionTypes";
 import * as classes from "../../../utils/styles";
+import { useForm } from "react-hook-form";
+
 const Body = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state);
   const departments = useSelector((state) => state.admin.allDepartment);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({});
-  const [value, setValue] = useState({
-    name: "",
-    dob: "",
-    email: "",
-    department: "",
-    contactNumber: "",
-    avatar: "",
-    joiningYear: Date().split(" ")[3],
-    gender: "",
-    designation: "",
+  const [response, setResponse] = useState(null);
+  
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
+    defaultValues: {
+      name: "",
+      dob: "",
+      email: "",
+      department: "",
+      contactNumber: "",
+      avatar: "",
+      joiningYear: Date().split(" ")[3],
+      gender: "",
+      designation: "",
+    }
   });
 
   useEffect(() => {
     if (Object.keys(store.errors).length !== 0) {
       setError(store.errors);
-      setValue({ ...value, email: "" });
+      setValue("email", "");
     }
-  }, [store.errors]);
+  }, [store.errors, setValue]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (data) => {
+    setResponse(null);
     setError({});
     setLoading(true);
-    dispatch(addFaculty(value));
+    dispatch(addFaculty(data))
+      .then((res) => {
+        setLoading(false);
+        setResponse(res);
+      })
+      .catch(() => setLoading(false));
   };
 
   useEffect(() => {
     if (store.errors || store.admin.facultyAdded) {
       setLoading(false);
       if (store.admin.facultyAdded) {
-        setValue({
-          name: "",
-          dob: "",
-          email: "",
-          department: "",
-          contactNumber: "",
-          avatar: "",
-          joiningYear: Date().split(" ")[3],
-          gender: "",
-          designation: "",
-        });
+        reset();
         dispatch({ type: SET_ERRORS, payload: {} });
         dispatch({ type: ADD_FACULTY, payload: false });
       }
     } else {
       setLoading(true);
     }
-  }, [store.errors, store.admin.facultyAdded]);
+  }, [store.errors, store.admin.facultyAdded, dispatch, reset]);
 
   useEffect(() => {
     dispatch({ type: SET_ERRORS, payload: {} });
@@ -69,182 +70,173 @@ const Body = () => {
 
   return (
     <div className="flex-1 mt-3 p-2">
-  <div className="space-y-5">
-    {/* Header Section */}
-    <div className="flex text-gray-400 items-center space-x-2">
-      <AddIcon />
-      <h1 className="text-lg md:text-xl">Add Faculty</h1>
-    </div>
-    {/* Form Container */}
-    <div className="mr-0 md:mr-10 bg-white flex flex-col rounded-xl p-6 md:p-8 shadow-md">
-      <form className={classes.adminForm0} onSubmit={handleSubmit}>
-        {/* Form Fields Section */}
-        <div className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
-          
-          {/* Left Column */}
-          <div className="flex flex-col space-y-6 md:w-1/2">
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>Name :</h1>
-              <input
-                placeholder="Full Name"
-                required
-                className={`${classes.adminInput} w-full`}
-                type="text"
-                value={value.name}
-                onChange={(e) => setValue({ ...value, name: e.target.value })}
-              />
-            </div>
-
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>DOB :</h1>
-              <input
-                placeholder="DD/MM/YYYY"
-                required
-                className={`${classes.adminInput} w-full`}
-                type="date"
-                value={value.dob}
-                onChange={(e) => setValue({ ...value, dob: e.target.value })}
-              />
-            </div>
-
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>Email :</h1>
-              <input
-                placeholder="Email"
-                required
-                className={`${classes.adminInput} w-full`}
-                type="email"
-                value={value.email}
-                onChange={(e) => setValue({ ...value, email: e.target.value })}
-              />
-            </div>
-
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>Designation :</h1>
-              <input
-                placeholder="Designation"
-                required
-                className={`${classes.adminInput} w-full`}
-                type="text"
-                value={value.designation}
-                onChange={(e) => setValue({ ...value, designation: e.target.value })}
-              />
-            </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="flex flex-col space-y-6 md:w-1/2">
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>Department :</h1>
-              <Select
-                required
-                displayEmpty
-                sx={{ height: 36, width: "100%" }}
-                inputProps={{ "aria-label": "Without label" }}
-                value={value.department}
-                onChange={(e) => setValue({ ...value, department: e.target.value })}
-              >
-                <MenuItem value="">None</MenuItem>
-                {departments?.map((dp, idx) => (
-                  <MenuItem key={idx} value={dp.department}>
-                    {dp.department}
-                  </MenuItem>
-                ))}
-              </Select>
-            </div>
-
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>Gender :</h1>
-              <Select
-                required
-                displayEmpty
-                sx={{ height: 36, width: "100%" }}
-                inputProps={{ "aria-label": "Without label" }}
-                value={value.gender}
-                onChange={(e) => setValue({ ...value, gender: e.target.value })}
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </div>
-
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>Contact Number :</h1>
-              <input
-                required
-                placeholder="Contact Number"
-                className={`${classes.adminInput} w-full`}
-                type="number"
-                value={value.contactNumber}
-                onChange={(e) => setValue({ ...value, contactNumber: e.target.value })}
-              />
-            </div>
-
-            <div className={classes.adminForm3}>
-              <h1 className={classes.adminLabel}>Avatar :</h1>
-              <FileBase
-                type="file"
-                multiple={false}
-                onDone={({ base64 }) => setValue({ ...value, avatar: base64 })}
-              />
-            </div>
-          </div>
+      <div className="space-y-5">
+        {/* Header Section */}
+        <div className="flex text-gray-400 items-center space-x-2">
+          <AddIcon />
+          <h1 className="text-lg md:text-xl">Add Faculty</h1>
         </div>
+        {/* Form Container */}
+        <div className="mr-0 md:mr-10 bg-white flex flex-col rounded-xl p-6 md:p-8 shadow-md">
+          <form className={classes.adminForm0} onSubmit={handleSubmit(onSubmit)}>
+            {/* Form Fields Section */}
+            <div className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
+              
+              {/* Left Column */}
+              <div className="flex flex-col space-y-6 md:w-1/2">
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Name :</h1>
+                  <input
+                    placeholder="Full Name"
+                    className={classes.adminInput}
+                    {...register("name", {
+                      required: "Name is required",
+                      pattern: {
+                        value: /^[A-Za-z\s]+$/,
+                        message: "Name must contain only letters and spaces"
+                      }
+                    })}
+                  />
+                  {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+                </div>
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>DOB :</h1>
+                  <input
+                    placeholder="DD/MM/YYYY"
+                    type="date"
+                    className={classes.adminInput}
+                    {...register("dob", { required: "Date of birth is required" })}
+                  />
+                  {errors.dob && <p className="text-red-500">{errors.dob.message}</p>}
+                </div>
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Email :</h1>
+                  <input
+                    placeholder="Email"
+                    type="email"
+                    className={classes.adminInput}
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/,
+                        message: "Enter a valid email address"
+                      }
+                    })}
+                  />
+                  {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+                </div>
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Designation :</h1>
+                  <input
+                    placeholder="Designation"
+                    className={classes.adminInput}
+                    {...register("designation", { required: "Designation is required" })}
+                  />
+                  {errors.designation && <p className="text-red-500">{errors.designation.message}</p>}
+                </div>
+              </div>
 
-        {/* Button Container */}
-        <div className="flex justify-center items-center space-x-4 mt-6">
-          <button className={`${classes.adminFormSubmitButton} px-6 py-1`} type="submit">
-            Submit
-          </button>
-          <button
-            onClick={() => {
-              setValue({
-                name: "",
-                dob: "",
-                email: "",
-                designation: "",
-                department: "",
-                contactNumber: "",
-                avatar: "",
-                joiningYear: Date().split(" ")[3],
-                password: "",
-                username: "",
-              });
-              setError({});
-            }}
-            className={`${classes.adminFormClearButton} px-6 py-2`}
-            type="button"
-          >
-            Clear
-          </button>
-        </div>
+              {/* Right Column */}
+              <div className="flex flex-col space-y-6 md:w-1/2">
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Department :</h1>
+                  <Select
+                    displayEmpty
+                    sx={{ height: 36, width: "100%" }}
+                    {...register("department", { required: "Department is required" })}
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    {departments?.map((dp, idx) => (
+                      <MenuItem key={idx} value={dp.department}>
+                        {dp.department}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.department && <p className="text-red-500">{errors.department.message}</p>}
+                </div>
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Gender :</h1>
+                  <Select
+                    displayEmpty
+                    sx={{ height: 36, width: "100%" }}
+                    {...register("gender", { required: "Gender is required" })}
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
+                    <MenuItem value="Other">Other</MenuItem>
+                  </Select>
+                  {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
+                </div>
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Contact Number :</h1>
+                  <input
+                    placeholder="Contact Number"
+                    className={classes.adminInput}
+                    {...register("contactNumber", {
+                      required: "Contact number is required",
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: "Contact number must be 10 digits"
+                      }
+                    })}
+                  />
+                  {errors.contactNumber && <p className="text-red-500">{errors.contactNumber.message}</p>}
+                </div>
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Avatar :</h1>
+                  <FileBase
+                    type="file"
+                    multiple={false}
+                    onDone={({ base64 }) => setValue("avatar", base64)}
+                  />
+                </div>
+              </div>
+            </div>
 
-        {/* Loading and Error Message */}
-        <div className={classes.loadingAndError}>
-          {loading && (
-            <Spinner
-              message="Adding Faculty"
-              height={30}
-              width={150}
-              color="#111111"
-              messageColor="blue"
-            />
-          )}
-          {(error.emailError || error.backendError) && (
-            <p className="text-red-500">
-              {error.emailError || error.backendError}
-            </p>
+            {/* Button Container */}
+            <div className="flex justify-center items-center space-x-4 mt-6">
+              <button className={`${classes.adminFormSubmitButton} px-6 py-1`} type="submit">
+                Submit
+              </button>
+              <button
+                onClick={() => reset()}
+                className={`${classes.adminFormClearButton} px-6 py-2`}
+                type="button"
+              >
+                Clear
+              </button>
+            </div>
+
+            {/* Loading and Error Message */}
+            <div className={classes.loadingAndError}>
+              {loading && (
+                <Spinner
+                  message="Adding Faculty"
+                  height={30}
+                  width={150}
+                  color="#111111"
+                  messageColor="blue"
+                />
+              )}
+              {(error.emailError || error.backendError) && (
+                <p className="text-red-500">
+                  {error.emailError || error.backendError}
+                </p>
+              )}
+            </div>
+          </form>
+          {response && (
+            <div className="mt-4 p-4 border rounded shadow-md">
+              <h3 className="text-lg font-semibold">Faculty Created Successfully!</h3>
+              <p>Username: {response.response.username}</p>
+              <p>Default Password: "DD-MM-YYYY"</p>
+              <a href="/faculty/update/password" className="text-blue-500 underline">Update Password</a>
+            </div>
           )}
         </div>
-      </form>
+      </div>
     </div>
-  </div>
-</div>
-
-
-  
   );
 };
 

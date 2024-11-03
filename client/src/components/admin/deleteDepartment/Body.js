@@ -58,7 +58,7 @@ const Body = () => {
     <div className="space-y-5">
       <div className="flex text-gray-400 items-center space-x-2">
         <EngineeringIcon />
-        <h1 className="text-lg md:text-xl">All Faculty</h1>
+        <h1 className="text-lg md:text-xl">Delete Department</h1>
       </div>
       <div className={classes.deletePar}>
         <form

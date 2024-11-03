@@ -1,65 +1,41 @@
 import React, { useEffect, useState } from "react";
-import EngineeringIcon from "@mui/icons-material/Engineering";
 import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import EngineeringIcon from "@mui/icons-material/Engineering";
 import FileBase from "react-file-base64";
-import { addAdmin } from "../../../redux/actions/adminActions";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Spinner from "../../../utils/Spinner";
-import * as classes from "../../../utils/styles";
+import { addAdmin } from "../../../redux/actions/adminActions";
 import { ADD_ADMIN, SET_ERRORS } from "../../../redux/actionTypes";
-import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
-import { useForm } from "react-hook-form";
+import * as classes from "../../../utils/styles";
 
 const Body = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state);
   const departments = useSelector((state) => state.admin.allDepartment);
+
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({});
   const [response, setResponse] = useState(null);
-  const navigate = useNavigate(); // Initialize useNavigate
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm();
-
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     setLoading(true);
-    try {
-      const result = await dispatch(addAdmin(data));
-      setResponse(result);
-      console.log(result);
-    } catch (err) {
-      console.error("Error from backend:", err);
-    } finally {
+    setResponse(null);
+    dispatch(addAdmin(data)).then((res) => {
       setLoading(false);
-    }
+      setResponse(res);
+      reset();
+    }).catch(() => setLoading(false));
   };
 
   useEffect(() => {
-    if (Object.keys(store.errors).length !== 0) {
-      setError(store.errors);
-      setValue("email", ""); // Reset email if there's an error
-    }
-  }, [store.errors, setValue]);
-
-  useEffect(() => {
-    if (store.admin.adminAdded) {
-      reset(); // Reset form values
+    if (store.errors && Object.keys(store.errors).length > 0) {
+      setLoading(false);
       dispatch({ type: SET_ERRORS, payload: {} });
-      dispatch({ type: ADD_ADMIN, payload: false });
     }
-  }, [store.admin.adminAdded, dispatch, reset]);
-
-  const handleUpdatePassword = () => {
-    navigate("/admin/update/password"); // Use navigate to go to the update password page
-  };
-
+  }, [dispatch]); 
+  
   return (
     <div className="flex-1 mt-6 p-4">
       <div className="space-y-5">
@@ -70,56 +46,60 @@ const Body = () => {
         <div className="mr-0 md:mr-20 bg-white flex flex-col rounded-xl p-4 md:flex-row overflow-hidden shadow-md">
           <div className="overflow-y-auto max-h-[75vh] md:max-h-[80vh] space-y-6 p-4 flex-1">
             <form className="space-y-6 w-full" onSubmit={handleSubmit(onSubmit)}>
-              {/* Form Fields */}
               <div className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
                 <div className="flex flex-col space-y-6 md:w-1/2">
                   <div className={classes.adminForm3}>
-                    <h1 className={`${classes.adminLabel} text-base`}>Name:</h1>
+                    <label className={`${classes.adminLabel} text-base`}>Name :</label>
                     <input
                       placeholder="Full Name"
-                      required
                       className={`${classes.adminInput} w-full max-w-xs md:max-w-[400px]`}
-                      type="text"
-                      {...register("name", { required: "Name is required" })}
+                      {...register("name", {
+                        required: "Name is required",
+                        pattern: {
+                          value: /^[A-Za-z\s]+$/,
+                          message: "Name must contain only letters and spaces",
+                        }
+                      })}
                     />
                     {errors.name && <p className="text-red-500">{errors.name.message}</p>}
                   </div>
+
                   <div className={classes.adminForm3}>
-                    <h1 className={`${classes.adminLabel} text-base`}>DOB:</h1>
+                    <label className={`${classes.adminLabel} text-base`}>DOB :</label>
                     <input
                       placeholder="DD/MM/YYYY"
-                      className={`${classes.adminInput} w-full max-w-xs md:max-w-[400px]`}
-                      required
                       type="date"
+                      className={`${classes.adminInput} w-full max-w-xs md:max-w-[400px]`}
                       {...register("dob", { required: "Date of birth is required" })}
                     />
                     {errors.dob && <p className="text-red-500">{errors.dob.message}</p>}
                   </div>
+
                   <div className={classes.adminForm3}>
-                    <h1 className={`${classes.adminLabel} text-base`}>Email:</h1>
+                    <label className={`${classes.adminLabel} text-base`}>Email :</label>
                     <input
                       placeholder="Email"
-                      required
-                      className={`${classes.adminInput} w-full max-w-xs md:max-w-[400px]`}
                       type="email"
-                      {...register("email", { 
-                        required: "Email is required", 
-                        pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: "Email is not valid" } 
+                      className={`${classes.adminInput} w-full max-w-xs md:max-w-[400px]`}
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/,
+                          message: "Enter a valid email address",
+                        }
                       })}
                     />
                     {errors.email && <p className="text-red-500">{errors.email.message}</p>}
                   </div>
                 </div>
 
-                {/* Additional Fields */}
                 <div className="flex flex-col space-y-6 md:w-1/2">
                   <div className={classes.adminForm3}>
-                    <h1 className={`${classes.adminLabel} text-base`}>Department:</h1>
+                    <label className={`${classes.adminLabel} text-base`}>Department :</label>
                     <Select
-                      required
+                      defaultValue=""
                       displayEmpty
                       sx={{ height: 36, minWidth: "100%", maxWidth: "400px" }}
-                      inputProps={{ "aria-label": "Without label" }}
                       {...register("department", { required: "Department is required" })}
                     >
                       <MenuItem value="">None</MenuItem>
@@ -131,22 +111,25 @@ const Body = () => {
                     </Select>
                     {errors.department && <p className="text-red-500">{errors.department.message}</p>}
                   </div>
+
                   <div className={classes.adminForm3}>
-                    <h1 className={`${classes.adminLabel} text-base`}>Contact Number:</h1>
+                    <label className={`${classes.adminLabel} text-base`}>Contact Number :</label>
                     <input
-                      required
                       placeholder="Contact Number"
                       className={`${classes.adminInput} w-full max-w-xs md:max-w-[400px]`}
-                      type="tel"
-                      {...register("contactNumber", { 
-                        required: "Contact number is required", 
-                        pattern: { value: /^[0-9]{10}$/, message: "Contact number must be 10 digits" } 
+                      {...register("contactNumber", {
+                        required: "Contact number is required",
+                        pattern: {
+                          value: /^[0-9]{10}$/,
+                          message: "Contact number must be 10 digits",
+                        }
                       })}
                     />
                     {errors.contactNumber && <p className="text-red-500">{errors.contactNumber.message}</p>}
                   </div>
+
                   <div className={classes.adminForm3}>
-                    <h1 className={`${classes.adminLabel} text-base`}>Avatar:</h1>
+                    <label className={`${classes.adminLabel} text-base`}>Avatar :</label>
                     <FileBase
                       type="file"
                       multiple={false}
@@ -156,16 +139,12 @@ const Body = () => {
                 </div>
               </div>
 
-              {/* Submit and Clear Buttons */}
               <div className={`${classes.adminFormButton} flex justify-center items-center`}>
                 <button className={`${classes.adminFormSubmitButton} px-6 py-1`} type="submit">
                   Submit
                 </button>
                 <button
-                  onClick={() => {
-                    reset(); // Reset form values
-                    setError({});
-                  }}
+                  onClick={() => reset()}
                   className={`${classes.adminFormClearButton} px-6 py-1`}
                   type="button"
                 >
@@ -173,39 +152,19 @@ const Body = () => {
                 </button>
               </div>
 
-              {/* Loading and Error Message */}
-              <div className={classes.loadingAndError}>
-                {loading && (
-                  <Spinner message="Adding Admin" height={30} width={150} color="#111111" messageColor="blue" />
-                )}
-                {(error.emailError || error.backendError) && (
-                  <p className="text-red-500">
-                    {error.emailError || error.backendError}
-                  </p>
-                )}
-              </div>
-
-              {/* Displaying Backend Response */}
-              {response && (
-                <div className="bg-green-100 p-4 mt-4 rounded">
-                  <h2 className="text-green-800 font-bold">Admin Created Successfully!</h2>
-                  <div className="bg-white p-2 rounded shadow-md mt-2">
-                    <h3 className="font-semibold">Account Details:</h3>
-                    <p><strong>Username:</strong> {response.response.username}</p>
-                    <p>
-                      <strong>Password:</strong> 
-                      <span> Your default password is Your DOB "DD-MM-YYYY" </span>
-                    </p>
-                    <button
-                      onClick={handleUpdatePassword}
-                      className="mt-2 text-blue-600 underline"
-                    >
-                      Update Password
-                    </button>
-                  </div>
-                </div>
+              {loading && (
+                <Spinner message="Adding Admin" height={30} width={150} color="#111111" messageColor="blue" />
               )}
             </form>
+
+            {response && (
+              <div className="mt-4 p-4 border rounded shadow-md">
+                <h3 className="text-lg font-semibold">Admin Created Successfully!</h3>
+                <p>Username: {response.response.username}</p>
+                <p>Default Password: "DD-MM-YYYY"</p>
+                <a href="/admin/update/password" className="text-blue-500">Update Password</a>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -66,7 +66,7 @@ const Body = () => {
   }, []);
 
   return (
-    <div className="flex-[0.8] mt-6 p-4">
+    <div className="flex-[1] mt-6 p-4">
     <div className="space-y-5">
       <div className="flex text-gray-400 items-center space-x-2">
         <AddIcon />
