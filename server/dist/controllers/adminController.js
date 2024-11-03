@@ -103,6 +103,7 @@ const getStudentSchema = zod_1.z.object({
 });
 // Controller functions
 const adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa admin login me");
     const result = loginSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -132,6 +133,7 @@ const adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.adminLogin = adminLogin;
 const updatedPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa admin password me");
     const result = updatePasswordSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -164,6 +166,7 @@ const updatedPassword = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.updatedPassword = updatedPassword;
 const updateAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa admin update me");
     const result = updateAdminSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -183,6 +186,7 @@ const updateAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.updateAdmin = updateAdmin;
 const addAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa admin add me");
     const result = addAdminSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -304,6 +308,7 @@ const createNotice = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.createNotice = createNotice;
 const addDepartment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa add department me");
     const result = addDepartmentSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -337,6 +342,7 @@ const addDepartment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.addDepartment = addDepartment;
 const addFaculty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa add faculty  me");
     const result = addFacultySchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -378,6 +384,7 @@ const addFaculty = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.addFaculty = addFaculty;
 const getFaculty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa faculty get me");
     const { department } = req.body;
     try {
         const dept = yield prisma.department.findUnique({
@@ -401,6 +408,7 @@ const getFaculty = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.getFaculty = getFaculty;
 const getNotice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa notice get me");
     try {
         const notices = yield prisma.notice.findMany();
         if (notices.length === 0) {
@@ -415,6 +423,7 @@ const getNotice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getNotice = getNotice;
 const addSubject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa add subject me");
     const result = addSubjectSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -461,6 +470,7 @@ const addSubject = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.addSubject = addSubject;
 const getSubject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa get subject me");
     if (!req.userId) {
         return res.status(401).json({ error: "Unauthenticated" });
     }
@@ -498,6 +508,7 @@ const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getAdmin = getAdmin;
 const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aayaa delete admin me");
     try {
         const adminIds = req.body;
         yield prisma.admin.deleteMany({
@@ -514,6 +525,7 @@ const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.deleteAdmin = deleteAdmin;
 const deleteFaculty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya delete faculty me");
     try {
         const facultyIds = req.body;
         yield prisma.faculty.deleteMany({
@@ -530,6 +542,7 @@ const deleteFaculty = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteFaculty = deleteFaculty;
 const deleteStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya del student me");
     try {
         const studentIds = req.body;
         yield prisma.student.deleteMany({
@@ -546,6 +559,7 @@ const deleteStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteStudent = deleteStudent;
 const deleteSubject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya delete subject");
     try {
         const subjectIds = req.body;
         yield prisma.subject.deleteMany({
@@ -562,6 +576,7 @@ const deleteSubject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteSubject = deleteSubject;
 const deleteDepartment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya delete department me");
     try {
         const { department } = req.body;
         yield prisma.department.delete({
@@ -576,6 +591,7 @@ const deleteDepartment = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.deleteDepartment = deleteDepartment;
 const addStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya add student me");
     const result = addStudentSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -636,6 +652,7 @@ const addStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.addStudent = addStudent;
 const getStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya get student me");
     const result = getStudentSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({ errors: result.error.flatten() });
@@ -658,6 +675,7 @@ const getStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.getStudent = getStudent;
 const getAllStudent = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya get all student me");
     try {
         const students = yield prisma.student.findMany();
         res.status(200).json(students);
@@ -669,6 +687,7 @@ const getAllStudent = (_req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getAllStudent = getAllStudent;
 const getAllFaculty = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya get all faculty me");
     try {
         const faculty = yield prisma.faculty.findMany();
         res.status(200).json(faculty);
@@ -680,6 +699,7 @@ const getAllFaculty = (_req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getAllFaculty = getAllFaculty;
 const getAllAdmin = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya get all admin me");
     try {
         const admins = yield prisma.admin.findMany();
         res.status(200).json(admins);
@@ -691,6 +711,7 @@ const getAllAdmin = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getAllAdmin = getAllAdmin;
 const getAllDepartment = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya get all department me");
     try {
         const departments = yield prisma.department.findMany();
         res.status(200).json(departments);
@@ -702,6 +723,7 @@ const getAllDepartment = (_req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.getAllDepartment = getAllDepartment;
 const getAllSubject = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("aaya get all subject");
     try {
         const subjects = yield prisma.subject.findMany();
         res.status(200).json(subjects);

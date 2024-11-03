@@ -89,6 +89,10 @@ const getStudentSchema = z.object({
 
 // Controller functions
 export const adminLogin = async (req: Request, res: Response) => {
+
+  console.log("aayaa admin login me")
+
+
   const result = loginSchema.safeParse(req.body);
   
   if (!result.success) {
@@ -129,6 +133,9 @@ export const adminLogin = async (req: Request, res: Response) => {
 };
 
 export const updatedPassword = async (req: Request, res: Response) => {
+
+  console.log("aayaa admin password me")
+
   const result = updatePasswordSchema.safeParse(req.body);
   
   if (!result.success) {
@@ -165,6 +172,8 @@ export const updatedPassword = async (req: Request, res: Response) => {
 };
 
 export const updateAdmin = async (req: Request, res: Response) => {
+  console.log("aayaa admin update me")
+
   const result = updateAdminSchema.safeParse(req.body);
   
   if (!result.success) {
@@ -187,6 +196,8 @@ export const updateAdmin = async (req: Request, res: Response) => {
 };
 
 export const addAdmin = async (req: Request, res: Response) => {
+  console.log("aayaa admin add me")
+
   const result = addAdminSchema.safeParse(req.body);
   
   if (!result.success) {
@@ -322,6 +333,8 @@ export const createNotice = async (req: Request, res: Response) => {
 };
 
 export const addDepartment = async (req: Request, res: Response) => {
+  console.log("aayaa add department me")
+
   const result = addDepartmentSchema.safeParse(req.body);
   
   if (!result.success) {
@@ -361,6 +374,8 @@ export const addDepartment = async (req: Request, res: Response) => {
 };
 
 export const addFaculty = async (req: Request, res: Response) => {
+  console.log("aayaa add faculty  me")
+
   const result = addFacultySchema.safeParse(req.body);
   
   if (!result.success) {
@@ -420,6 +435,7 @@ export const addFaculty = async (req: Request, res: Response) => {
 };
 
 export const getFaculty = async (req: Request, res: Response) => {
+  console.log("aayaa faculty get me")
   const { department } = req.body;
 
   try {
@@ -447,6 +463,8 @@ export const getFaculty = async (req: Request, res: Response) => {
 };
 
 export const getNotice = async (req: Request, res: Response) => {
+  console.log("aayaa notice get me")
+
   try {
     const notices = await prisma.notice.findMany();
 
@@ -463,6 +481,7 @@ export const getNotice = async (req: Request, res: Response) => {
 
 
 export const addSubject = async (req: Request, res: Response) => {
+  console.log("aayaa add subject me")
     const result = addSubjectSchema.safeParse(req.body);
     
     if (!result.success) {
@@ -516,6 +535,7 @@ export const addSubject = async (req: Request, res: Response) => {
 
 export const getSubject = async (req: Request, res: Response) => 
 {
+  console.log("aayaa get subject me")
     if (!req.userId) {
       return res.status(401).json({ error: "Unauthenticated" });
     }
@@ -558,6 +578,8 @@ export const getSubject = async (req: Request, res: Response) =>
 };
 
 export const deleteAdmin = async (req: Request, res: Response) => {
+  console.log("aayaa delete admin me")
+
     try {
       const adminIds: string[] = req.body;
   
@@ -575,6 +597,8 @@ export const deleteAdmin = async (req: Request, res: Response) => {
   };
   
   export const deleteFaculty = async (req: Request, res: Response) => {
+    console.log("aaya delete faculty me")
+
     try {
       const facultyIds: string[] = req.body;
   
@@ -592,6 +616,8 @@ export const deleteAdmin = async (req: Request, res: Response) => {
   };
   
   export const deleteStudent = async (req: Request, res: Response) => {
+    console.log("aaya del student me")
+
     try {
       const studentIds: string[] = req.body;
   
@@ -609,6 +635,7 @@ export const deleteAdmin = async (req: Request, res: Response) => {
   };
   
   export const deleteSubject = async (req: Request, res: Response) => {
+    console.log("aaya delete subject")
     try {
       const subjectIds: string[] = req.body;
   
@@ -626,6 +653,7 @@ export const deleteAdmin = async (req: Request, res: Response) => {
   };
   
   export const deleteDepartment = async (req: Request, res: Response) => {
+    console.log("aaya delete department me")
     try {
       const { department } = req.body;
   
@@ -641,6 +669,7 @@ export const deleteAdmin = async (req: Request, res: Response) => {
   };
   
 export const addStudent = async (req: Request, res: Response) => {
+  console.log("aaya add student me")
     const result = addStudentSchema.safeParse(req.body);
     
     if (!result.success) {
@@ -719,6 +748,7 @@ export const addStudent = async (req: Request, res: Response) => {
   };
   
   export const getStudent = async (req: Request, res: Response) => {
+    console.log("aaya get student me")
     const result = getStudentSchema.safeParse(req.body);
     
     if (!result.success) {
@@ -748,6 +778,7 @@ export const addStudent = async (req: Request, res: Response) => {
   };
   
   export const getAllStudent = async (_req: Request, res: Response) => {
+    console.log("aaya get all student me")
     try {
       const students = await prisma.student.findMany();
       res.status(200).json(students);
@@ -758,6 +789,7 @@ export const addStudent = async (req: Request, res: Response) => {
   };
   
   export const getAllFaculty = async (_req: Request, res: Response) => {
+    console.log("aaya get all faculty me")
     try {
       const faculty = await prisma.faculty.findMany();
       res.status(200).json(faculty);
@@ -768,6 +800,7 @@ export const addStudent = async (req: Request, res: Response) => {
   };
   
   export const getAllAdmin = async (_req: Request, res: Response) => {
+    console.log("aaya get all admin me")
     try {
       const admins = await prisma.admin.findMany();
       res.status(200).json(admins);
@@ -778,6 +811,7 @@ export const addStudent = async (req: Request, res: Response) => {
   };
   
   export const getAllDepartment = async (_req: Request, res: Response) => {
+    console.log("aaya get all department me")
     try {
       const departments = await prisma.department.findMany();
       res.status(200).json(departments);
@@ -788,6 +822,7 @@ export const addStudent = async (req: Request, res: Response) => {
   };
   
   export const getAllSubject = async (_req: Request, res: Response) => {
+    console.log("aaya get all subject")
     try {
       const subjects = await prisma.subject.findMany();
       res.status(200).json(subjects);
