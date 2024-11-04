@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -39,8 +37,8 @@ model Attendance {
   updatedAt            DateTime @updatedAt
 
   @@map("attendance")
+  @@index([studentId, subjectId])
 }
-
 
 model Department {
   id             String    @id @default(uuid())
@@ -75,6 +73,7 @@ model Faculty {
   departmentRef   Department @relation(fields: [department], references: [department])
 
   @@map("faculty")
+  @@index([department])
 }
 
 model Marks {
@@ -88,6 +87,7 @@ model Marks {
   updatedAt DateTime @updatedAt
 
   @@map("marks")
+  @@index([examId, studentId])
 }
 
 model Notice {
@@ -129,6 +129,7 @@ model Student {
   departmentRef       Department   @relation(fields: [department], references: [department])
 
   @@map("student")
+  @@index([department, section, year])
 }
 
 model Subject {
@@ -146,6 +147,7 @@ model Subject {
 
   @@unique([subjectCode, department])
   @@map("subject")
+  @@index([department, year])
 }
 
 model Test {
@@ -163,4 +165,5 @@ model Test {
   departmentRef Department @relation(fields: [department], references: [department])
 
   @@map("test")
+  @@index([subjectCode, department, year, section])
 }
