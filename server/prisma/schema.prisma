@@ -47,6 +47,8 @@ model Department {
   faculties      Faculty[]
   students       Student[]
   subjects       Subject[]
+  studyMaterials StudyMaterial[]
+  assignments    Assignment[]
   tests          Test[]
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -68,6 +70,8 @@ model Faculty {
   dob             String
   joiningYear     Int
   passwordUpdated Boolean  @default(false)
+  studyMaterials StudyMaterial[]
+  assignments    Assignment[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   departmentRef   Department @relation(fields: [department], references: [department])
@@ -124,6 +128,8 @@ model Student {
   passwordUpdated     Boolean      @default(false)
   attendance          Attendance[]
   marks               Marks[]
+  studyMaterials StudyMaterial[]
+  assignments    Assignment[]
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
   departmentRef       Department   @relation(fields: [department], references: [department])
@@ -166,4 +172,45 @@ model Test {
 
   @@map("test")
   @@index([subjectCode, department, year, section])
+}
+
+model StudyMaterial {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  fileUrl     String
+  subject     String
+  year        Int
+  department  String
+  section     String
+  
+  Student Student[]
+  Faculty Faculty[]
+  Department Department[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("study_material")
+  @@index([title, subject, year, department, section])
+}
+
+model Assignment {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  fileUrl     String
+  subject     String
+  year        Int
+  department  String
+  section     String
+  dueDate     DateTime
+  
+  Student Student[]
+  Faculty Faculty[]
+  Department Department[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("assignment")
+  @@index([title, subject, year, department, section])
 }

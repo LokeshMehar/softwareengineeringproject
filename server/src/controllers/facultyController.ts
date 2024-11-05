@@ -420,3 +420,98 @@ export const markAttendance = async (req : Request ,res : Response ) => {
       res.status(500).json({error:"Internal server error."});
     }
 };
+
+// controllers.ts
+import { Request, Response } from 'express';
+import { z } from 'zod';
+import { prisma } from './prisma';
+
+export const addStudyMaterial = async (req: Request, res: Response) => {
+  const studyMaterialSchema = z.object({
+    title: z.string().min(1, 'Title is required'),
+    description: z.string().min(1, 'Description is required'),
+    fileUrl: z.string().url('File URL must be a valid URL'),
+    subject: z.string().min(1, 'Subject is required'),
+    year: z.number().positive('Year must be a positive number'),
+    department: z.string().min(1, 'Department is required'),
+    section: z.string().min(1, 'Section is required')
+  });
+
+  const result = studyMaterialSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
+  }
+
+  try {
+    const existingMaterial = await prisma.studyMaterial.findFirst({
+      where: {
+        title: result.data.title,
+        subject: result.data.subject,
+        year: result.data.year,
+        department: result.data.department,
+        section: result.data.section
+      }
+    });
+
+    if (existingMaterial) {
+      return res.status(400).json({ error: 'Study material already exists' });
+    }
+
+    const newMaterial = await prisma.studyMaterial.create({
+      data: result.data
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Study material added successfully',
+      response: newMaterial
+    });
+  } catch (error) {
+    console.error('Add study material error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const getStudyMaterials = async (req: Request, res: Response) => {
+  try {
+    const studyMaterials = await prisma.studyMaterial.findMany();
+    res.status(200).json({
+      success: true,
+      response: studyMaterials
+    });
+  } catch (error) {
+    console.error('Get study materials error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const deleteStudyMaterial = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const studyMaterial = await prisma.studyMaterial.findUnique({
+      where: {
+        id
+      }
+    });
+
+    if (!studyMaterial) {
+      return res.status(404).json({ error: 'Study material not found' });
+    }
+
+    await prisma.studyMaterial.delete({
+      where: {
+        id
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Study material deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete study material error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
