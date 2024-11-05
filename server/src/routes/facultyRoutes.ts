@@ -115,6 +115,38 @@ const routes: RouteConfig[] = [
     description: 'Mark student attendance',
     rateLimit: authRateLimiter
   },
+  {
+    path: '/study-materials',
+    method: 'post',
+    handler: addStudyMaterial,
+    requiresAuth: true,
+    description: 'Add new study material',
+    rateLimit: authRateLimiter
+  },
+  {
+    path: '/study-materials',
+    method: 'get',
+    handler: getStudyMaterials,
+    requiresAuth: true,
+    description: 'Get all study materials',
+    rateLimit: authRateLimiter
+  },
+  {
+    path: '/study-materials/:id',
+    method: 'delete',
+    handler: deleteStudyMaterial,
+    requiresAuth: true,
+    description: 'Delete a study material',
+    rateLimit: authRateLimiter
+  },
+  {
+    path: '/addstudymaterial',
+    method: 'post',
+    handler: addStudyMaterial,
+    requiresAuth: true,
+    description: 'Add new study material',
+    rateLimit: authRateLimiter
+  },
 ];
 
 // Request body validation middleware

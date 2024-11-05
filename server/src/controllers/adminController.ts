@@ -92,7 +92,6 @@ export const adminLogin = async (req: Request, res: Response) => {
 
   console.log("aayaa admin login me")
 
-
   const result = loginSchema.safeParse(req.body);
   
   if (!result.success) {
@@ -582,13 +581,17 @@ export const deleteAdmin = async (req: Request, res: Response) => {
 
     try {
       const adminIds: string[] = req.body;
+      console.log(req.body);
+
+      console.log("adminIds",adminIds)
   
-      await prisma.admin.deleteMany({
+      const delitem = await prisma.admin.deleteMany({
         where: {
           id: { in: adminIds },
         },
       });
   
+      console.log("delitem",delitem)
       res.status(200).json({ message: "Admins deleted successfully" });
     } catch (error) {
       console.error("Delete admin error:", error);

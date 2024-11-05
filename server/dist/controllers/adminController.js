@@ -511,11 +511,14 @@ const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     console.log("aayaa delete admin me");
     try {
         const adminIds = req.body;
-        yield prisma.admin.deleteMany({
+        console.log(req.body);
+        console.log("adminIds", adminIds);
+        const delitem = yield prisma.admin.deleteMany({
             where: {
                 id: { in: adminIds },
             },
         });
+        console.log("delitem", delitem);
         res.status(200).json({ message: "Admins deleted successfully" });
     }
     catch (error) {

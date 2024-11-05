@@ -6,6 +6,7 @@ import adminRoutes from "./routes/adminRoutes";
 import studentRoutes from "./routes/studentRoutes";
 import facultyRoutes from "./routes/facultyRoutes";
 import { addDummyAdmin } from "./controllers/adminController";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const app = express();
 
 // Built-in middleware for parsing JSON
 app.use(express.json({ limit: "30mb" }));
+
 
 // Built-in middleware for parsing URL-encoded data
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
