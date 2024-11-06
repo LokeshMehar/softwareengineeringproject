@@ -9,6 +9,9 @@ import {
   getStudent,
   uploadMarks,
   markAttendance,
+  addStudyMaterial,
+  getStudyMaterials,
+  deleteStudyMaterial,
 } from '../controllers/facultyController';
 import auth from '../middlewares/auth';
 import { RouteConfig, ApiError } from '../utils/types';
