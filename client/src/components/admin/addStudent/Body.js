@@ -49,7 +49,7 @@ const Body = () => {
           <AddIcon />
           <h1>Add Student</h1>
         </div>
-        <div className="bg-white flex flex-col rounded-xl shadow-lg p-6">
+        <div className= {classes.bodyp}>
           <form
             className={`${classes.adminForm0} scrollbar-thin scrollbar-track-white scrollbar-thumb-black overflow-y-scroll h-[27rem]`}
             onSubmit={handleSubmit(onSubmit)}>
@@ -151,7 +151,7 @@ const Body = () => {
                   <Select
                     displayEmpty
                     defaultValue=""
-                    sx={{ height: 36 }}
+                    sx={{ height: 36  ,backgroundColor: "white"}}
                     {...register("year", { required: "Year is required" })}
                     >
                     <MenuItem value="">None</MenuItem>
@@ -168,7 +168,7 @@ const Body = () => {
                   <Select
                     displayEmpty
                     defaultValue=""
-                    sx={{ height: 36 }}
+                    sx={{ height: 36  ,backgroundColor: "white"}}
                     {...register("department", { required: "Department is required" })}
                     >
                     <MenuItem value="">None</MenuItem>
@@ -184,7 +184,7 @@ const Body = () => {
                   <Select
                     displayEmpty
                     defaultValue=""
-                    sx={{ height: 36 }}
+                    sx={{ height: 36  ,backgroundColor: "white"}}
                     {...register("gender", { required: "Gender is required" })}
                     >
                     <MenuItem value="">None</MenuItem>
@@ -252,7 +252,7 @@ const Body = () => {
                   <Select
                     displayEmpty
                     defaultValue=""
-                    sx={{ height: 36 }}
+                    sx={{ height: 36  ,backgroundColor: "white"}}
                     {...register("section", { required: "Section is required" })}
                     >
                     <MenuItem value="">None</MenuItem>

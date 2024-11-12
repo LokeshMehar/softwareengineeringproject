@@ -181,6 +181,7 @@ model StudyMaterial {
   department  String
   year        String
   section     String
+  title       String
   date        String
   createdAt   DateTime   @default(now())
   departmentRef Department @relation(fields: [department], references: [department])

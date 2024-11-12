@@ -444,8 +444,8 @@ export const addStudyMaterial = async (req: Request, res: Response) => {
     const existingMaterial = await prisma.studyMaterial.findFirst({
       where: {
         title: result.data.title,
-        subject: result.data.subject,
-        year: result.data.year,
+        subjectCode: result.data.subject,
+        year: result.data.year.toString(),
         department: result.data.department,
         section: result.data.section
       }
@@ -456,7 +456,15 @@ export const addStudyMaterial = async (req: Request, res: Response) => {
     }
 
     const newMaterial = await prisma.studyMaterial.create({
-      data: result.data
+      data: {
+        title: result.data.title,
+        subjectCode: result.data.subject,
+        year: result.data.year.toString(),
+        department: result.data.department,
+        section: result.data.section,
+        material: result.data.fileUrl,
+        date : Date.now().toLocaleString()
+            }
     });
 
     res.status(201).json({

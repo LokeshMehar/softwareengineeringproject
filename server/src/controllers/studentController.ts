@@ -49,6 +49,20 @@ const attendanceSchema = z.object({
   section: z.string().min(1,"Section is required."),
 });
 
+const createFeedbackSchema = z.object({
+  studentId: z.string(),
+  subjectCode: z.string(),
+  department: z.string(),
+  year: z.string(),
+  section: z.string(),
+  feedback: z.string(),
+  clarityRating: z.number().min(1).max(5),
+  knowledgeRating: z.number().min(1).max(5),
+  presentationRating: z.number().min(1).max(5),
+  helpfulnessRating: z.number().min(1).max(5),
+  engagementRating: z.number().min(1).max(5)
+});
+
 // Controller functions
 export const studentLogin = async (req: Request, res: Response) => {
   const result = loginSchema.safeParse(req.body);
@@ -253,4 +267,33 @@ export const attendance = async (req : Request ,res : Response ) => {
      
      res.status(500).json({error:"Internal server error."});
    }
+};
+
+export const feedback = async (req: Request, res: Response) => {
+  const result = createFeedbackSchema.safeParse(req.body);
+  
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
+  }
+
+  try {
+    const feedbackData = result.data;
+
+    const feedback = await prisma.feedback.create({
+      data: feedbackData
+    });
+
+    res.status(201).json({ result: feedback });
+  } catch (error) {
+    console.error("Create feedback error:", error);
+    
+    // Check for unique constraint violation
+    if ((error as any).code === 'P2002') {
+      return res.status(400).json({ 
+        error: "Feedback already exists for this student and subject combination" 
+      });
+    }
+
+    res.status(500).json({ error: "Internal server error." });
+  }
 };
