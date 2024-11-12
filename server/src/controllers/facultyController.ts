@@ -421,10 +421,7 @@ export const markAttendance = async (req : Request ,res : Response ) => {
     }
 };
 
-// controllers.ts
-import { Request, Response } from 'express';
-import { z } from 'zod';
-import { prisma } from './prisma';
+
 
 export const addStudyMaterial = async (req: Request, res: Response) => {
   const studyMaterialSchema = z.object({
