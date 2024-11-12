@@ -6,6 +6,7 @@ import {
   ATTENDANCE,
   UPDATE_STUDENT,
   GET_SUBJECT,
+  GET_STUDYMATERIAL,
 } from "../actionTypes";
 import * as api from "../api";
 
@@ -84,17 +85,26 @@ export const getAttendance =
     }
   };
 
-
-  //Adding Student Material
-  export const getStudyMaterial = (department, year , subject) => async (dispatch) => {
+  //Adding features
+  export const getStudyMaterial = (formData) => async (dispatch) => {
     try {
-      const formData = {
-        department,
-        year,
-        subject,
-      };
-      const { data } = await api.getStudyMaterial(formData);
+      const { data } = await api.getStudyMaterialS(formData);
       dispatch({ type: GET_STUDYMATERIAL, payload: data });
+    } catch (error) {
+      dispatch({ type: SET_ERRORS, payload: error.response.data });
+    }
+  };
+
+  export const feedback =
+  (formData) => async (dispatch) => {
+    try {
+      console.log("Formdata");
+      console.log(formData);
+      const { data } = await api.feedback(formData);
+      console.log("DAta");
+      console.log(data);
+      alert("Feedback Updated");
+      dispatch({ type: ATTENDANCE, payload: data });
     } catch (error) {
       dispatch({ type: SET_ERRORS, payload: error.response.data });
     }
