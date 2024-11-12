@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Global styling for calendar */
+.custom-calendar {
+    @apply bg-black text-white; /* Black background with white text for the whole calendar */
+  }
+  
+  /* Targeting the month and year header */
+  .custom-calendar .react-calendar__navigation {
+    @apply bg-black text-white; /* Black background with white text for month-year header */
+  }
+  
+  /* Styling for the day names (Mon, Tue, etc.) */
+  .custom-calendar .react-calendar__month-view__days__day {
+    @apply bg-black text-white p-2; /* Black background with white text for day names */
+  }
+  
+  /* Styling for the individual day numbers (e.g., 1, 2, 3) */
+  .custom-calendar .react-calendar__tile {
+    @apply bg-black text-white p-2; /* Black background with white text for each day */
+  }
+  
+  /* Highlight today's date */
+  .custom-calendar .react-calendar__month-view__days__day--today {
+    @apply bg-gray-600 text-white; /* Highlight today's date */
+  }
+  
+  /* Focus styles for day tiles */
+  .custom-calendar .react-calendar__tile:focus {
+    @apply bg-gray-700; /* Change background when focused */
+  }
+  
+  
