@@ -77,7 +77,7 @@ const Body = () => {
           <h1 className="text-lg md:text-xl">Add Faculty</h1>
         </div>
         {/* Form Container */}
-        <div className="mr-0 md:mr-10 bg-white flex flex-col rounded-xl p-6 md:p-8 shadow-md">
+        <div className= {classes.bodyp}>
           <form className={classes.adminForm0} onSubmit={handleSubmit(onSubmit)}>
             {/* Form Fields Section */}
             <div className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
@@ -142,7 +142,7 @@ const Body = () => {
                   <h1 className={classes.adminLabel}>Department :</h1>
                   <Select
                     displayEmpty
-                    sx={{ height: 36, width: "100%" }}
+                    sx={{ height: 36, width: "100%" ,backgroundColor: "white" }}
                     {...register("department", { required: "Department is required" })}
                   >
                     <MenuItem value="">None</MenuItem>
@@ -158,7 +158,7 @@ const Body = () => {
                   <h1 className={classes.adminLabel}>Gender :</h1>
                   <Select
                     displayEmpty
-                    sx={{ height: 36, width: "100%" }}
+                    sx={{ height: 36, width: "100%"  ,backgroundColor: "white"}}
                     {...register("gender", { required: "Gender is required" })}
                   >
                     <MenuItem value="">None</MenuItem>
@@ -228,9 +228,9 @@ const Body = () => {
           </form>
           {response && (
             <div className="mt-4 p-4 border rounded shadow-md">
-              <h3 className="text-lg font-semibold">Faculty Created Successfully!</h3>
-              <p>Username: {response.response.username}</p>
-              <p>Default Password: "DD-MM-YYYY"</p>
+              <h3 className="text-white font-semibold">Faculty Created Successfully!</h3>
+              <p className="text-white font-semibold">Username: {response.response.username}</p>
+              <p className="text-white font-semibold">Default Password: "DD-MM-YYYY"</p>
               <a href="/faculty/update/password" className="text-blue-500 underline">Update Password</a>
             </div>
           )}
