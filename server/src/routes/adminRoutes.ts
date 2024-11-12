@@ -25,6 +25,7 @@ import {
   deleteSubject,
   createNotice,
   getNotice,
+  getFeedback,
 } from '../controllers/adminController';
 import auth from '../middlewares/auth';
 import { RouteConfig, ApiError } from '../utils/types';
@@ -270,6 +271,15 @@ const routes: RouteConfig[] = [
     handler: deleteSubject,
     requiresAuth: true,
     description: 'Delete subject',
+    rateLimit: authRateLimiter
+  },
+  
+  {
+    path: '/feedback',
+    method: 'post',
+    handler: getFeedback,
+    requiresAuth: true,
+    description: 'Get required feedback',
     rateLimit: authRateLimiter
   },
 ];
