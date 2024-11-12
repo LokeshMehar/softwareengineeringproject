@@ -175,23 +175,22 @@ model Test {
 }
 
 model StudyMaterial {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  fileUrl     String
-  subject     String
-  year        Int
+  id          String     @id @default(uuid())
+  material        String
+  subjectCode String
   department  String
+  year        String
   section     String
-  
-  Student Student[]
-  Faculty Faculty[]
-  Department Department[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  date        String
+  createdAt   DateTime   @default(now())
+  departmentRef Department @relation(fields: [department], references: [department])
+  studentRef   Student?   @relation(fields: [studentId], references: [id])
+  studentId    String?
+  facultyRef   Faculty?   @relation(fields: [facultyId], references: [id])
+  facultyId    String?
 
   @@map("study_material")
-  @@index([title, subject, year, department, section])
+  @@index([subjectCode, department, year, section])
 }
 
 model Assignment {
