@@ -213,3 +213,21 @@ model Assignment {
   @@map("assignment")
   @@index([title, subject, year, department, section])
 }
+
+
+model Feedback {
+  id              String  @id @default(uuid()) @map("_id") 
+  studentId       String  
+  subjectCode     String  
+  department      String  
+  year            String  
+  section         String  
+  feedback        String  
+  clarityRating   Int     
+  knowledgeRating Int     
+  presentationRating Int  
+  helpfulnessRating Int   
+  engagementRating Int     
+
+  @@map("feedback")
+}
