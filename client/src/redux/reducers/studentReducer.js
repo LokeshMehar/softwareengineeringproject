@@ -47,7 +47,11 @@ const studentReducer = (state = initialState, action) => {
         ...state,
         attendance: action.payload,
       };
-
+      case GET_STUDYMATERIAL:
+        return {
+          ...state,
+          studymaterial:action.payload,
+        }
     default:
       return state;
   }

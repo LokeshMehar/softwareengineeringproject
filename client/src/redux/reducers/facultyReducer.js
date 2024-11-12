@@ -7,6 +7,8 @@ import {
   MARKS_UPLOADED,
   UPDATE_FACULTY,
   UPDATE_PASSWORD,
+  GET_STUDYMATERIAL,
+  ADD_STUDYMATERIAL,
 } from "../actionTypes";
 
 const initialState = {
@@ -57,7 +59,16 @@ const facultyReducer = (state = initialState, action) => {
         ...state,
         attendanceUploaded: action.payload,
       };
-
+      case GET_STUDYMATERIAL:
+        return{
+          ...state,
+          studymaterial:action.payload,
+        };
+      case ADD_STUDYMATERIAL:
+        return {
+          ...state,
+          materialAdded:action.payload,
+        }
     default:
       return state;
   }

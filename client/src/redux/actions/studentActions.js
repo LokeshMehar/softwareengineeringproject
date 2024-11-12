@@ -83,3 +83,19 @@ export const getAttendance =
       dispatch({ type: SET_ERRORS, payload: error.response.data });
     }
   };
+
+
+  //Adding Student Material
+  export const getStudyMaterial = (department, year , subject) => async (dispatch) => {
+    try {
+      const formData = {
+        department,
+        year,
+        subject,
+      };
+      const { data } = await api.getStudyMaterial(formData);
+      dispatch({ type: GET_STUDYMATERIAL, payload: data });
+    } catch (error) {
+      dispatch({ type: SET_ERRORS, payload: error.response.data });
+    }
+  };

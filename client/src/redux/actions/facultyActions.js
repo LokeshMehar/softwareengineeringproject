@@ -108,3 +108,25 @@ export const markAttendance =
       dispatch({ type: SET_ERRORS, payload: error.response.data });
     }
   };
+
+
+  //Adding Study Material
+  export const addStudyMaterial = (formData) => async (dispatch) => {
+    try {
+      const { data } = await api.addStudyMaterial(formData);
+      alert("Study Material Added Successfully");
+  
+      dispatch({ type: ADD_STUDYMATERIAL , payload: true });
+    } catch (error) {
+      dispatch({ type: SET_ERRORS, payload: error.response.data });
+    }
+  };
+  
+  export const getstudymaterial = (formData) => async (dispatch) => {
+    try {
+      const { data } = await api.getStudyMaterial(formData);
+      dispatch({ type: GET_STUDYMATERIAL, payload: data });
+    } catch (error) {
+      dispatch({ type: SET_ERRORS, payload: error.response.data });
+    }
+  };
