@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // const API = axios.create({ baseURL: process.env.REACT_APP_SERVER_URL });
+// const API = axios.create({ baseURL: "https://seproject-backend-m.onrender.com" });
 const API = axios.create({ baseURL: "http://localhost:5001/" });
-
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("user")) {
     req.headers.Authorization = `Bearer ${
@@ -101,3 +101,24 @@ export const getTestResult = (testResult) =>
 export const getAttendance = (attendance) =>
   API.post("/api/student/attendance", attendance);
 
+
+
+//Adding Features
+
+export const getStudyMaterial = (studymaterial) => 
+  API.post("/api/faculty/getstudymaterial",studymaterial);
+
+  
+
+export const addStudyMaterial = (studymaterial) => 
+  API.post("/api/faculty/addstudymaterial",studymaterial);
+
+export const getStudyMaterialS = (studymaterial) => 
+  API.post("/api/student/getstudymaterial",studymaterial);
+
+//Add feedback
+export const feedback = (feedbackform) => 
+  API.post("/api/student/feedback",feedbackform);
+
+export const feedbackA = (feedbackform) => 
+  API.post("/api/admin/feedback",feedbackform);
