@@ -87,6 +87,13 @@ const getStudentSchema = z.object({
     section: z.string().optional(),
 });
 
+const getFeedbackSchema = z.object({
+  subjectCode: z.string(),
+  department: z.string(),
+  year: z.string(),
+  section: z.string()
+});
+
 // Controller functions
 export const adminLogin = async (req: Request, res: Response) => {
 
@@ -833,5 +840,48 @@ export const addStudent = async (req: Request, res: Response) => {
       console.error("Get all subjects error:", error);
       res.status(500).json({ error: "Internal server error." });
     }
+};
+
+
+
+export const getFeedback = async (req: Request, res: Response) => {
+  // Validate request body
+  const result = getFeedbackSchema.safeParse(req.body);
+  
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
+  }
+
+  try {
+    const { subjectCode, department, year, section } = result.data;
+
+    const feedbacks = await prisma.feedback.findMany({
+      where: {
+        subjectCode,
+        department,
+        year,
+        section
+      },
+      select: {
+        id: true,
+        studentId: true,
+        feedback: true,
+        clarityRating: true,
+        knowledgeRating: true,
+        presentationRating: true,
+        helpfulnessRating: true,
+        engagementRating: true,
+      }
+    });
+
+    if (feedbacks.length === 0) {
+      return res.status(404).json({ error: "No feedback found for the given criteria" });
+    }
+
+    res.status(200).json({ result: feedbacks });
+  } catch (error) {
+    console.error("Get feedback error:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
 };
 
