@@ -244,6 +244,14 @@ const routes = [
         description: 'Delete subject',
         rateLimit: rateLimiters_1.authRateLimiter
     },
+    {
+        path: '/feedback',
+        method: 'post',
+        handler: adminController_1.getFeedback,
+        requiresAuth: true,
+        description: 'Get required feedback',
+        rateLimit: rateLimiters_1.authRateLimiter
+    },
 ];
 // Request body validation middleware
 const validateRequestBody = (req, res, next) => {

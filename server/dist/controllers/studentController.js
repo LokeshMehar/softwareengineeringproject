@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.attendance = exports.testResult = exports.updateStudent = exports.updatePassword = exports.studentLogin = void 0;
+exports.getStudyMaterials = exports.feedback = exports.attendance = exports.testResult = exports.updateStudent = exports.updatePassword = exports.studentLogin = void 0;
 const client_1 = require("@prisma/client");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -55,6 +55,25 @@ const attendanceSchema = zod_1.z.object({
     department: zod_1.z.string().min(1, "Department is required."),
     year: zod_1.z.number().min(1, "Year must be a positive number."),
     section: zod_1.z.string().min(1, "Section is required."),
+});
+const createFeedbackSchema = zod_1.z.object({
+    studentId: zod_1.z.string(),
+    subjectCode: zod_1.z.string(),
+    department: zod_1.z.string(),
+    year: zod_1.z.string(),
+    section: zod_1.z.string(),
+    feedback: zod_1.z.string(),
+    clarityRating: zod_1.z.number().min(1).max(5),
+    knowledgeRating: zod_1.z.number().min(1).max(5),
+    presentationRating: zod_1.z.number().min(1).max(5),
+    helpfulnessRating: zod_1.z.number().min(1).max(5),
+    engagementRating: zod_1.z.number().min(1).max(5)
+});
+const getStudyMaterialSchema = zod_1.z.object({
+    department: zod_1.z.string(),
+    year: zod_1.z.string(),
+    section: zod_1.z.string(),
+    subjectCode: zod_1.z.string()
 });
 // Controller functions
 const studentLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -219,3 +238,66 @@ const attendance = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.attendance = attendance;
+const feedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = createFeedbackSchema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ errors: result.error.flatten() });
+    }
+    try {
+        const feedbackData = result.data;
+        const feedback = yield prisma.feedback.create({
+            data: feedbackData
+        });
+        res.status(201).json({ result: feedback });
+    }
+    catch (error) {
+        console.error("Create feedback error:", error);
+        // Check for unique constraint violation
+        if (error.code === 'P2002') {
+            return res.status(400).json({
+                error: "Feedback already exists for this student and subject combination"
+            });
+        }
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
+exports.feedback = feedback;
+const getStudyMaterials = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Validate request body
+    const result = getStudyMaterialSchema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ errors: result.error.flatten() });
+    }
+    try {
+        const { department, year, section, subjectCode } = result.data;
+        const materials = yield prisma.studyMaterial.findMany({
+            where: {
+                department,
+                year,
+                section,
+                subjectCode
+            },
+            select: {
+                id: true,
+                material: true,
+                subjectCode: true,
+                department: true,
+                year: true,
+                section: true,
+                date: true,
+                createdAt: true,
+                studentId: true,
+                facultyId: true
+            }
+        });
+        if (materials.length === 0) {
+            return res.status(404).json({ error: "No study materials found for the given criteria" });
+        }
+        res.status(200).json({ result: materials });
+    }
+    catch (error) {
+        console.error('Get study materials error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+exports.getStudyMaterials = getStudyMaterials;

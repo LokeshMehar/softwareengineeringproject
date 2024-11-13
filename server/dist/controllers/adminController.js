@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllSubject = exports.getAllDepartment = exports.getAllAdmin = exports.getAllFaculty = exports.getAllStudent = exports.getStudent = exports.addStudent = exports.deleteDepartment = exports.deleteSubject = exports.deleteStudent = exports.deleteFaculty = exports.deleteAdmin = exports.getAdmin = exports.getSubject = exports.addSubject = exports.getNotice = exports.getFaculty = exports.addFaculty = exports.addDepartment = exports.createNotice = exports.addDummyAdmin = exports.addAdmin = exports.updateAdmin = exports.updatedPassword = exports.adminLogin = void 0;
+exports.getFeedback = exports.getAllSubject = exports.getAllDepartment = exports.getAllAdmin = exports.getAllFaculty = exports.getAllStudent = exports.getStudent = exports.addStudent = exports.deleteDepartment = exports.deleteSubject = exports.deleteStudent = exports.deleteFaculty = exports.deleteAdmin = exports.getAdmin = exports.getSubject = exports.addSubject = exports.getNotice = exports.getFaculty = exports.addFaculty = exports.addDepartment = exports.createNotice = exports.addDummyAdmin = exports.addAdmin = exports.updateAdmin = exports.updatedPassword = exports.adminLogin = void 0;
 const client_1 = require("@prisma/client");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -100,6 +100,12 @@ const getStudentSchema = zod_1.z.object({
     department: zod_1.z.string().min(1, "Department is required."),
     year: zod_1.z.number().min(1, "Year must be positive."),
     section: zod_1.z.string().optional(),
+});
+const getFeedbackSchema = zod_1.z.object({
+    subjectCode: zod_1.z.string(),
+    department: zod_1.z.string(),
+    year: zod_1.z.string(),
+    section: zod_1.z.string()
 });
 // Controller functions
 const adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -737,3 +743,40 @@ const getAllSubject = (_req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getAllSubject = getAllSubject;
+const getFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Validate request body
+    const result = getFeedbackSchema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ errors: result.error.flatten() });
+    }
+    try {
+        const { subjectCode, department, year, section } = result.data;
+        const feedbacks = yield prisma.feedback.findMany({
+            where: {
+                subjectCode,
+                department,
+                year,
+                section
+            },
+            select: {
+                id: true,
+                studentId: true,
+                feedback: true,
+                clarityRating: true,
+                knowledgeRating: true,
+                presentationRating: true,
+                helpfulnessRating: true,
+                engagementRating: true,
+            }
+        });
+        if (feedbacks.length === 0) {
+            return res.status(404).json({ error: "No feedback found for the given criteria" });
+        }
+        res.status(200).json({ result: feedbacks });
+    }
+    catch (error) {
+        console.error("Get feedback error:", error);
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
+exports.getFeedback = getFeedback;

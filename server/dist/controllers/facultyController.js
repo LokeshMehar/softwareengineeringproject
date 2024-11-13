@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.markAttendance = exports.uploadMarks = exports.getStudent = exports.getTest = exports.createTest = exports.updateFaculty = exports.updatedPassword = exports.facultyLogin = void 0;
+exports.deleteStudyMaterial = exports.getStudyMaterials = exports.addStudyMaterial = exports.markAttendance = exports.uploadMarks = exports.getStudent = exports.getTest = exports.createTest = exports.updateFaculty = exports.updatedPassword = exports.facultyLogin = void 0;
 const client_1 = require("@prisma/client");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -67,6 +67,21 @@ const markAttendanceSchema = zod_1.z.object({
     department: zod_1.z.string().min(1, "Department is required."),
     year: zod_1.z.number().min(1, "Year must be a positive number."),
     section: zod_1.z.string().min(1, "Section is required."),
+});
+const studyMaterialSchema = zod_1.z.object({
+    title: zod_1.z.string().min(1, 'Title is required'),
+    description: zod_1.z.string().min(1, 'Description is required'),
+    fileUrl: zod_1.z.string().url('File URL must be a valid URL'),
+    subject: zod_1.z.string().min(1, 'Subject is required'),
+    year: zod_1.z.number().positive('Year must be a positive number'),
+    department: zod_1.z.string().min(1, 'Department is required'),
+    section: zod_1.z.string().min(1, 'Section is required')
+});
+const getStudyMaterialSchema = zod_1.z.object({
+    department: zod_1.z.string(),
+    year: zod_1.z.string(),
+    section: zod_1.z.string(),
+    subjectCode: zod_1.z.string()
 });
 // Controller functions
 const facultyLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -373,3 +388,110 @@ const markAttendance = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.markAttendance = markAttendance;
+const addStudyMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = studyMaterialSchema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ errors: result.error.flatten() });
+    }
+    try {
+        const existingMaterial = yield prisma.studyMaterial.findFirst({
+            where: {
+                title: result.data.title,
+                subjectCode: result.data.subject,
+                year: result.data.year.toString(),
+                department: result.data.department,
+                section: result.data.section
+            }
+        });
+        if (existingMaterial) {
+            return res.status(400).json({ error: 'Study material already exists' });
+        }
+        const newMaterial = yield prisma.studyMaterial.create({
+            data: {
+                title: result.data.title,
+                subjectCode: result.data.subject,
+                year: result.data.year.toString(),
+                department: result.data.department,
+                section: result.data.section,
+                material: result.data.fileUrl,
+                date: Date.now().toLocaleString()
+            }
+        });
+        res.status(201).json({
+            success: true,
+            message: 'Study material added successfully',
+            response: newMaterial
+        });
+    }
+    catch (error) {
+        console.error('Add study material error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+exports.addStudyMaterial = addStudyMaterial;
+const getStudyMaterials = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Validate request body
+    const result = getStudyMaterialSchema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ errors: result.error.flatten() });
+    }
+    try {
+        const { department, year, section, subjectCode } = result.data;
+        const materials = yield prisma.studyMaterial.findMany({
+            where: {
+                department,
+                year,
+                section,
+                subjectCode
+            },
+            select: {
+                id: true,
+                material: true,
+                subjectCode: true,
+                department: true,
+                year: true,
+                section: true,
+                date: true,
+                createdAt: true,
+                studentId: true,
+                facultyId: true
+            }
+        });
+        if (materials.length === 0) {
+            return res.status(404).json({ error: "No study materials found for the given criteria" });
+        }
+        res.status(200).json({ result: materials });
+    }
+    catch (error) {
+        console.error('Get study materials error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+exports.getStudyMaterials = getStudyMaterials;
+const deleteStudyMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const studyMaterial = yield prisma.studyMaterial.findUnique({
+            where: {
+                id
+            }
+        });
+        if (!studyMaterial) {
+            return res.status(404).json({ error: 'Study material not found' });
+        }
+        yield prisma.studyMaterial.delete({
+            where: {
+                id
+            }
+        });
+        res.status(200).json({
+            success: true,
+            message: 'Study material deleted successfully'
+        });
+    }
+    catch (error) {
+        console.error('Delete study material error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+exports.deleteStudyMaterial = deleteStudyMaterial;

@@ -82,6 +82,20 @@ const routes = [
         middleware: [auth_1.default],
         rateLimit: rateLimiters_1.authRateLimiter,
     },
+    {
+        path: '/studymaterial',
+        method: 'post',
+        handler: studentController_1.getStudyMaterials,
+        middleware: [auth_1.default],
+        rateLimit: rateLimiters_1.authRateLimiter,
+    },
+    {
+        path: '/feedback',
+        method: 'post',
+        handler: studentController_1.feedback,
+        middleware: [auth_1.default],
+        rateLimit: rateLimiters_1.authRateLimiter,
+    },
 ];
 // Simplified error handler wrapper
 const asyncHandler = (fn) => (req, res, next) => {

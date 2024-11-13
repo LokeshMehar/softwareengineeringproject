@@ -102,6 +102,38 @@ const routes = [
         description: 'Mark student attendance',
         rateLimit: rateLimiters_1.authRateLimiter
     },
+    {
+        path: '/study-materials',
+        method: 'post',
+        handler: facultyController_1.addStudyMaterial,
+        requiresAuth: true,
+        description: 'Add new study material',
+        rateLimit: rateLimiters_1.authRateLimiter
+    },
+    {
+        path: '/study-materials',
+        method: 'get',
+        handler: facultyController_1.getStudyMaterials,
+        requiresAuth: true,
+        description: 'Get all study materials',
+        rateLimit: rateLimiters_1.authRateLimiter
+    },
+    {
+        path: '/study-materials/:id',
+        method: 'delete',
+        handler: facultyController_1.deleteStudyMaterial,
+        requiresAuth: true,
+        description: 'Delete a study material',
+        rateLimit: rateLimiters_1.authRateLimiter
+    },
+    {
+        path: '/addstudymaterial',
+        method: 'post',
+        handler: facultyController_1.addStudyMaterial,
+        requiresAuth: true,
+        description: 'Add new study material',
+        rateLimit: rateLimiters_1.authRateLimiter
+    },
 ];
 // Request body validation middleware
 const validateRequestBody = (req, res, next) => {
