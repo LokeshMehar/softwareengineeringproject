@@ -6,6 +6,8 @@ import {
   updateStudent,
   testResult,
   attendance,
+  getStudyMaterials,
+  feedback,
 } from '../controllers/studentController';
 import auth from '../middlewares/auth';
 import { CustomApiError, RouteConfig,  } from '../utils/types';
@@ -86,6 +88,22 @@ const routes: RouteConfig[] = [
     path: '/attendance',
     method: 'post',
     handler: attendance,
+    middleware: [auth],
+    rateLimit: authRateLimiter,
+  },
+  
+  {
+    path: '/studymaterial',
+    method: 'post',
+    handler: getStudyMaterials,
+    middleware: [auth],
+    rateLimit: authRateLimiter,
+  },
+  
+  {
+    path: '/feedback',
+    method: 'post',
+    handler: feedback,
     middleware: [auth],
     rateLimit: authRateLimiter,
   },
