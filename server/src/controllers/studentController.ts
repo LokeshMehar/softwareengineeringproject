@@ -63,6 +63,13 @@ const createFeedbackSchema = z.object({
   engagementRating: z.number().min(1).max(5)
 });
 
+const getStudyMaterialSchema = z.object({
+  department: z.string(),
+  year: z.string(),
+  section: z.string(),
+  subjectCode: z.string()
+});
+
 // Controller functions
 export const studentLogin = async (req: Request, res: Response) => {
   const result = loginSchema.safeParse(req.body);
@@ -297,5 +304,49 @@ export const feedback = async (req: Request, res: Response) => {
     }
 
     res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+export const getStudyMaterials = async (req: Request, res: Response) => {
+  // Validate request body
+  const result = getStudyMaterialSchema.safeParse(req.body);
+  
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
+  }
+ 
+  try {
+    const { department, year, section, subjectCode } = result.data;
+ 
+    const materials = await prisma.studyMaterial.findMany({
+      where: {
+        department,
+        year, 
+        section,
+        subjectCode
+      },
+      select: {
+        id: true,
+        material: true,
+        subjectCode: true,
+        department: true,
+        year: true,
+        section: true,
+        date: true,
+        createdAt: true,
+        studentId: true,
+        facultyId: true
+      }
+    });
+
+    if (materials.length === 0) {
+      return res.status(404).json({ error: "No study materials found for the given criteria" });
+    }
+
+    res.status(200).json({ result: materials });
+
+  } catch (error) {
+    console.error('Get study materials error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
