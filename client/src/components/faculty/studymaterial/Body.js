@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
-
-
-
 import { addStudyMaterial } from "../../../redux/actions/facultyActions";
 import { ADD_STUDYMATERIAL, SET_ERRORS } from "../../../redux/actionTypes";
-
-
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Spinner from "../../../utils/Spinner";
 import * as classes from "../../../utils/styles";
+import FileBase from "react-file-base64"; // Importing FileBase
 
 const Body = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state);
   const user = JSON.parse(localStorage.getItem("user"));
+  const departments = useSelector((state) => state.admin.allDepartment); // Predefined department list
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({});
   const [file, setFile] = useState(null);
@@ -25,7 +22,8 @@ const Body = () => {
     section: "",
     year: "",
     title: "",
-    department: user.result.department,
+    department: user.result.department, // Predefined department value
+    date: "", // Initialize date field
   });
 
   useEffect(() => {
@@ -37,28 +35,28 @@ const Body = () => {
         year: "",
         title: "",
         department: user.result.department,
+        date: "", 
       });
     }
   }, [store.errors]);
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError({});
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("subjectCode", value.subjectCode);
-    formData.append("section", value.section);
-    formData.append("year", value.year);
-    formData.append("title", value.title);
-    formData.append("department", user.result.department);
+    const materialData = {
+      material: file,
+      subjectCode: value.subjectCode,
+      section: value.section,
+      year: value.year,
+      title: value.title,
+      department: user.result.department,
+      date: value.date, // Send the date field to backend
+    };
 
-    dispatch(addStudyMaterial(formData));
+    console.log(materialData); // For debugging purpose
+    dispatch(addStudyMaterial(materialData)); // Dispatching action with the material data
   };
 
   useEffect(() => {
@@ -71,6 +69,7 @@ const Body = () => {
           year: "",
           title: "",
           department: user.result.department,
+          date: "", // Reset date field after successful addition
         });
         setFile(null);
         dispatch({ type: SET_ERRORS, payload: {} });
@@ -88,7 +87,7 @@ const Body = () => {
           <AddIcon />
           <h1>Add Study Material</h1>
         </div>
-        <div className="mr-10 bg-white flex flex-col rounded-xl">
+        <div className="mr-10 bg-black text-white flex flex-col rounded-xl">
           <form className={classes.adminForm0} onSubmit={handleSubmit}>
             <div className={classes.adminForm1}>
               <div className={classes.adminForm2l}>
@@ -137,7 +136,7 @@ const Body = () => {
                   <Select
                     required
                     displayEmpty
-                    sx={{ height: 36 }}
+                    sx={{ height: 36 , backgroundColor:'white', color:'black'}}
                     inputProps={{ "aria-label": "Without label" }}
                     value={value.year}
                     onChange={(e) =>
@@ -159,7 +158,7 @@ const Body = () => {
                   <Select
                     required
                     displayEmpty
-                    sx={{ height: 36 }}
+                    sx={{ height: 36 ,backgroundColor:'white', color:'black'}}
                     inputProps={{ "aria-label": "Without label" }}
                     value={value.section}
                     onChange={(e) =>
@@ -175,12 +174,23 @@ const Body = () => {
 
                 <div className={classes.adminForm3}>
                   <h1 className={classes.adminLabel}>File Upload :</h1>
+                  <FileBase
+                    type="file"
+                    multiple={false}
+                    onDone={({ base64 }) => setFile(base64)} // Handle file selection with base64 encoding
+                  />
+                </div>
+
+                <div className={classes.adminForm3}>
+                  <h1 className={classes.adminLabel}>Date :</h1>
                   <input
                     required
+                    type="date"
                     className={classes.adminInput}
-                    type="file"
-                    accept=".pdf"
-                    onChange={handleFileChange}
+                    value={value.date}
+                    onChange={(e) =>
+                      setValue({ ...value, date: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -197,7 +207,8 @@ const Body = () => {
                     section: "",
                     year: "",
                     title: "",
-                    department: "",
+                    department: user.result.department,
+                    date: "", // Reset date on clear
                   });
                   setFile(null);
                   setError({});
@@ -218,11 +229,6 @@ const Body = () => {
                   color="#111111"
                   messageColor="blue"
                 />
-              )}
-              {(error.materialError || error.backendError) && (
-                <p className="text-red-500">
-                  {error.materialError || error.backendError}
-                </p>
               )}
             </div>
           </form>
