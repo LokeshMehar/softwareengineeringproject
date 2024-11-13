@@ -12,7 +12,7 @@
   }
   
   /* Styling for the day names (Mon, Tue, etc.) */
-  .custom-calendar .react-calendar__month-view__days__day {
+  .custom-calendar .react-calendar_month-viewdays_day {
     @apply bg-black text-white p-2; /* Black background with white text for day names */
   }
   
@@ -22,7 +22,7 @@
   }
   
   /* Highlight today's date */
-  .custom-calendar .react-calendar__month-view__days__day--today {
+  .custom-calendar .react-calendar_month-viewdays_day--today {
     @apply bg-gray-600 text-white; /* Highlight today's date */
   }
   
@@ -30,5 +30,3 @@
   .custom-calendar .react-calendar__tile:focus {
     @apply bg-gray-700; /* Change background when focused */
   }
-  
-  
