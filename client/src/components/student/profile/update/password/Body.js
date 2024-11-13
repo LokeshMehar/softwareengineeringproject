@@ -58,11 +58,11 @@ const Body = () => {
           <h1>Password</h1>
         </div>
 
-        <div className=" mr-10 bg-white flex flex-col rounded-xl ">
+        <div className=" mr-10 bg-[#181818] text-white flex flex-col rounded-xl ">
           <form
             onSubmit={update}
             className="flex flex-col space-y-6 items-center my-8">
-            <h1 className="text-black text-3xl font-bold">Update Password</h1>
+            <h1 className="text-white text-3xl font-bold">Update Password</h1>
             <div className="space-y-1">
               <p className="text-[#515966] font-bold text-sm">New Password</p>
               <div className="border-2 rounded-lg px-3 flex items-center space-x-3 w-full">
@@ -71,7 +71,7 @@ const Body = () => {
                   value={newPassword}
                   required
                   type={showPassword ? "text" : "password"}
-                  className="rounded-lg outline-none py-2  placeholder:text-sm"
+                  className="rounded-lg outline-none py-2  placeholder:text-sm bg-[#181818]"
                   placeholder="New Password"
                 />
                 {showPassword ? (
@@ -97,7 +97,7 @@ const Body = () => {
                   value={confirmPassword}
                   required
                   type={showPassword ? "text" : "password"}
-                  className="rounded-lg outline-none py-2  placeholder:text-sm"
+                  className="rounded-lg outline-none py-2  placeholder:text-sm bg-[#181818]"
                   placeholder="Confirm Password"
                 />
                 {showPassword ? (

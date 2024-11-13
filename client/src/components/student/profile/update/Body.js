@@ -93,7 +93,7 @@ const Body = () => {
           </div>
         </div>
 
-        <div className=" mr-10 bg-white flex flex-col rounded-xl overflow-y-scroll h-[27rem] ">
+        <div className=" mr-10 bg-black text-white flex flex-col rounded-xl overflow-y-scroll h-[27rem] ">
           <form className={classes.adminForm0} onSubmit={handleSubmit}>
             <div className={classes.adminForm1}>
               <div className={classes.adminForm2l}>
