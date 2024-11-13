@@ -5,6 +5,7 @@ import {
   UPDATE_PASSWORD,
   TEST_RESULT,
   ATTENDANCE,
+  GET_STUDYMATERIAL,
 } from "../actionTypes";
 
 const initialState = {
@@ -17,6 +18,8 @@ const initialState = {
   testResult: [],
   tests: [],
   attendance: [],
+  materialAdded: false,
+  studymaterial: [],
 };
 
 const studentReducer = (state = initialState, action) => {
@@ -47,7 +50,11 @@ const studentReducer = (state = initialState, action) => {
         ...state,
         attendance: action.payload,
       };
-
+    case GET_STUDYMATERIAL:
+      return {
+        ...state,
+        studymaterial:action.payload,
+      }
     default:
       return state;
   }

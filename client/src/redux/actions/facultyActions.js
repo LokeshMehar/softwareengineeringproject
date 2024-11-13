@@ -8,6 +8,8 @@ import {
   GET_STUDENT,
   MARKS_UPLOADED,
   ATTENDANCE_MARKED,
+  GET_STUDYMATERIAL,
+  ADD_STUDYMATERIAL,
 } from "../actionTypes";
 import * as api from "../api";
 
@@ -104,6 +106,34 @@ export const markAttendance =
       const { data } = await api.markAttendance(formData);
       alert("Attendance Marked Successfully");
       dispatch({ type: ATTENDANCE_MARKED, payload: true });
+    } catch (error) {
+      dispatch({ type: SET_ERRORS, payload: error.response.data });
+    }
+  };
+
+
+  //Adding features
+  export const addStudyMaterial = (formData) => async (dispatch) => {
+    try {
+      console.log(formData);
+      const { data } = await api.addStudyMaterial(formData);
+      alert("Study Material Added Successfully");
+      console.log(data);
+      dispatch({ type: ADD_STUDYMATERIAL , payload: true });
+    } catch (error) {
+      dispatch({ type: SET_ERRORS, payload: error.response.data.result });
+    }
+  };
+  
+  export const getstudymaterial = (formData1) => async (dispatch) => {
+    try {
+      console.log('in getstudy material')
+      console.log(formData1);
+      console.log('in getstudy material')
+      const { data } = await api.getStudyMaterial(formData1);
+      console.log(data);
+      dispatch({ type: GET_STUDYMATERIAL, payload: data });
+      return data;
     } catch (error) {
       dispatch({ type: SET_ERRORS, payload: error.response.data });
     }

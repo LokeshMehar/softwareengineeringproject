@@ -7,6 +7,8 @@ import {
   MARKS_UPLOADED,
   UPDATE_FACULTY,
   UPDATE_PASSWORD,
+  GET_STUDYMATERIAL,
+  ADD_STUDYMATERIAL,
 } from "../actionTypes";
 
 const initialState = {
@@ -14,9 +16,11 @@ const initialState = {
   updatedPassword: false,
   updatedFaculty: false,
   testAdded: false,
+  materialAdded: false,
   marksUploaded: false,
   attendanceUploaded: false,
   tests: [],
+  studymaterial: [],
 };
 
 const facultyReducer = (state = initialState, action) => {
@@ -57,7 +61,16 @@ const facultyReducer = (state = initialState, action) => {
         ...state,
         attendanceUploaded: action.payload,
       };
-
+    case GET_STUDYMATERIAL:
+      return{
+        ...state,
+        studymaterial:action.payload,
+      };
+    case ADD_STUDYMATERIAL:
+      return {
+        ...state,
+        materialAdded:action.payload,
+      }
     default:
       return state;
   }

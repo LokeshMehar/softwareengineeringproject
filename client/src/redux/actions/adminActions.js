@@ -23,6 +23,7 @@ import {
   DELETE_SUBJECT,
   CREATE_NOTICE,
   GET_NOTICE,
+  FEEDBACK_A,
 } from "../actionTypes";
 import * as api from "../api";
 
@@ -132,6 +133,7 @@ export const getAdmin = (formData) => async (dispatch) => {
 export const deleteAdmin = (formData) => async (dispatch) => {
   try {
     const { data } = await api.deleteAdmin(formData);
+    console.log(data);
     alert("Admin Deleted");
     dispatch({ type: DELETE_ADMIN, payload: true });
   } catch (error) {
@@ -189,6 +191,7 @@ export const addFaculty = (formData) => async (dispatch) => {
     const { data } = await api.addFaculty(formData);
     alert("Faculty Added Successfully");
     dispatch({ type: ADD_FACULTY, payload: true });
+    return data;
   } catch (error) {
     dispatch({ type: SET_ERRORS, payload: error.response.data });
   }
@@ -225,8 +228,10 @@ export const getSubject = (formData) => async (dispatch) => {
 export const addStudent = (formData) => async (dispatch) => {
   try {
     const { data } = await api.addStudent(formData);
-    alert("Student Added Successfully");
+    console.log(data);
+    alert(`Student Added Successfully With User Name ${data.username}`);
     dispatch({ type: ADD_STUDENT, payload: true });
+    return data;
   } catch (error) {
     dispatch({ type: SET_ERRORS, payload: error.response.data });
   }
@@ -245,6 +250,18 @@ export const getNotice = (formData) => async (dispatch) => {
   try {
     const { data } = await api.getNotice(formData);
     dispatch({ type: GET_NOTICE, payload: data });
+  } catch (error) {
+    dispatch({ type: SET_ERRORS, payload: error.response.data });
+  }
+};
+
+export const feedback = (formData) => async (dispatch) => {
+  try {
+    // console.log(formData)
+
+    const { data } = await api.feedbackA(formData);
+    // console.log(data);
+    dispatch({ type: FEEDBACK_A, payload: data });
   } catch (error) {
     dispatch({ type: SET_ERRORS, payload: error.response.data });
   }

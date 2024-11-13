@@ -49,7 +49,7 @@ const Body = () => {
           <AddIcon />
           <h1>Add Department</h1>
         </div>
-        <div className=" mr-10 bg-white flex flex-col rounded-xl ">
+        <div className={`${classes.bodyp}`}>
           <form className={classes.adminForm0} onSubmit={handleSubmit}>
             <div className="flex py-10 ml-10 space-x-28">
               <div className="flex space-y-10 ">

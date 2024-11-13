@@ -24,7 +24,9 @@ import {
   DELETE_SUBJECT,
   CREATE_NOTICE,
   GET_NOTICE,
+  FEEDBACK_A,
 } from "../actionTypes";
+import { feedback } from "../api";
 
 const initialState = {
   authData: null,
@@ -45,6 +47,7 @@ const initialState = {
   subjects: [],
   admins: [],
   notices: [],
+  feedback: [],
   adminDeleted: false,
   departmentDeleted: false,
   facultyDeleted: false,
@@ -175,6 +178,11 @@ const adminReducer = (state = initialState, action) => {
       return {
         ...state,
         allStudent: action.payload,
+      };
+    case FEEDBACK_A:
+      return {
+        ...state,
+        feedback: action.payload,
       };
     default:
       return state;
