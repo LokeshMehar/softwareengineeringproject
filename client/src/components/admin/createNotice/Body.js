@@ -66,7 +66,7 @@ const Body = () => {
           <EngineeringIcon />
           <h1 className="text-lg md:text-xl">Create Notice</h1>
         </div>
-        <div className="mr-0 md:mr-20 bg-white flex flex-col rounded-xl p-4 md:flex-row overflow-hidden shadow-md">
+        <div className={classes.bodyp}>
           {/* Scrollable container */}
           <div className="overflow-y-auto max-h-[75vh] md:max-h-[80vh] space-y-6 p-4 flex-1">
             <form className="space-y-6 w-full" onSubmit={handleSubmit}>
@@ -103,7 +103,7 @@ const Body = () => {
                     <Select
                       required
                       displayEmpty
-                      sx={{ height: 36, minWidth: "100%", maxWidth: "400px" }}
+                      sx={{ height: 36, minWidth: "100%", maxWidth: "400px"  ,backgroundColor: "white" }}
                       inputProps={{ "aria-label": "Without label" }}
                       value={value.noticeFor}
                       onChange={(e) => setValue({ ...value, noticeFor: e.target.value })}
