@@ -530,32 +530,32 @@ export const getStudyMaterials = async (req: Request, res: Response) => {
   }
  };
 
-// export const deleteStudyMaterial = async (req: Request, res: Response) => {
-//   const { id } = req.params;
+export const deleteStudyMaterial = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-//   try {
-//     const studyMaterial = await prisma.studyMaterial.findUnique({
-//       where: {
-//         id
-//       }
-//     });
+  try {
+    const studyMaterial = await prisma.studyMaterial.findUnique({
+      where: {
+        id
+      }
+    });
 
-//     if (!studyMaterial) {
-//       return res.status(404).json({ error: 'Study material not found' });
-//     }
+    if (!studyMaterial) {
+      return res.status(404).json({ error: 'Study material not found' });
+    }
 
-//     await prisma.studyMaterial.delete({
-//       where: {
-//         id
-//       }
-//     });
+    await prisma.studyMaterial.delete({
+      where: {
+        id
+      }
+    });
 
-//     res.status(200).json({
-//       success: true,
-//       message: 'Study material deleted successfully'
-//     });
-//   } catch (error) {
-//     console.error('Delete study material error:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      message: 'Study material deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete study material error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
