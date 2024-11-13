@@ -64,6 +64,23 @@ const markAttendanceSchema = z.object({
   section: z.string().min(1, "Section is required."),
 });
 
+const studyMaterialSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  fileUrl: z.string().url('File URL must be a valid URL'),
+  subject: z.string().min(1, 'Subject is required'),
+  year: z.number().positive('Year must be a positive number'),
+  department: z.string().min(1, 'Department is required'),
+  section: z.string().min(1, 'Section is required')
+});
+
+const getStudyMaterialSchema = z.object({
+  department: z.string(),
+  year: z.string(),
+  section: z.string(),
+  subjectCode: z.string()
+ });
+
 // Controller functions
 export const facultyLogin = async (req: Request, res: Response) => {
   const result = loginSchema.safeParse(req.body);
@@ -424,15 +441,6 @@ export const markAttendance = async (req : Request ,res : Response ) => {
 
 
 export const addStudyMaterial = async (req: Request, res: Response) => {
-  const studyMaterialSchema = z.object({
-    title: z.string().min(1, 'Title is required'),
-    description: z.string().min(1, 'Description is required'),
-    fileUrl: z.string().url('File URL must be a valid URL'),
-    subject: z.string().min(1, 'Subject is required'),
-    year: z.number().positive('Year must be a positive number'),
-    department: z.string().min(1, 'Department is required'),
-    section: z.string().min(1, 'Section is required')
-  });
 
   const result = studyMaterialSchema.safeParse(req.body);
 
@@ -479,44 +487,75 @@ export const addStudyMaterial = async (req: Request, res: Response) => {
 };
 
 export const getStudyMaterials = async (req: Request, res: Response) => {
+  // Validate request body
+  const result = getStudyMaterialSchema.safeParse(req.body);
+  
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
+  }
+ 
   try {
-    const studyMaterials = await prisma.studyMaterial.findMany();
-    res.status(200).json({
-      success: true,
-      response: studyMaterials
+    const { department, year, section, subjectCode } = result.data;
+ 
+    const materials = await prisma.studyMaterial.findMany({
+      where: {
+        department,
+        year, 
+        section,
+        subjectCode
+      },
+      select: {
+        id: true,
+        material: true,
+        subjectCode: true,
+        department: true,
+        year: true,
+        section: true,
+        date: true,
+        createdAt: true,
+        studentId: true,
+        facultyId: true
+      }
     });
+ 
+    if (materials.length === 0) {
+      return res.status(404).json({ error: "No study materials found for the given criteria" });
+    }
+ 
+    res.status(200).json({ result: materials });
+ 
   } catch (error) {
     console.error('Get study materials error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+ };
 
-export const deleteStudyMaterial = async (req: Request, res: Response) => {
-  const { id } = req.params;
+// export const deleteStudyMaterial = async (req: Request, res: Response) => {
+//   const { id } = req.params;
 
-  try {
-    const studyMaterial = await prisma.studyMaterial.findUnique({
-      where: {
-        id
-      }
-    });
+//   try {
+//     const studyMaterial = await prisma.studyMaterial.findUnique({
+//       where: {
+//         id
+//       }
+//     });
 
-    if (!studyMaterial) {
-      return res.status(404).json({ error: 'Study material not found' });
-    }
+//     if (!studyMaterial) {
+//       return res.status(404).json({ error: 'Study material not found' });
+//     }
 
-    await prisma.studyMaterial.delete({
-      where: {
-        id
-      }
-    });
+//     await prisma.studyMaterial.delete({
+//       where: {
+//         id
+//       }
+//     });
 
-    res.status(200).json({
-      success: true,
-      message: 'Study material deleted successfully'
-    });
-  } catch (error) {
-    console.error('Delete study material error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       message: 'Study material deleted successfully'
+//     });
+//   } catch (error) {
+//     console.error('Delete study material error:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
