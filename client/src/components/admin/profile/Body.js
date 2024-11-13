@@ -24,7 +24,7 @@ const Body = () => {
         </div>
       </div>
   
-      <div className="relative w-full md:w-[98%] bg-white rounded-xl p-4 md:p-6 shadow-md">
+      <div className="relative w-full md:w-[98%]  bg-neutral-900 rounded-xl p-4 md:p-6 shadow-md">
         <div className="absolute left-1/2 transform -translate-x-1/2 -top-8">
           <Avatar src={user.result.avatar} sx={{ width: 70, height: 70 }} />
         </div>
